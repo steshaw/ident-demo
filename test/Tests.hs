@@ -78,9 +78,9 @@ megaTests :: TestTree
 megaTests = testGroup "Megaparsec"
   [ testCase "test0" $
       Mega.parse test0 @?= megaGood
-{-
   , testCase "test1" $
-      Orig.parse test1 @?= good
+      Mega.parse test1 @?= megaGood
+{-
   , testCase "test2" $
       let err = case Orig.parse test2 of
                   Right _ -> error "Right unexpected"
@@ -91,9 +91,9 @@ megaTests = testGroup "Megaparsec"
                   Right _ -> error "Right unexpected"
                   Left e  -> e
       in head (P.errorMessages err) @?= bad
-  , testCase "test4" $
-      Orig.parse test4 @?= good
 -}
+  , testCase "test4" $
+      Mega.parse test4 @?= megaGood
   ]
 
 tests :: TestTree
