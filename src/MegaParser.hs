@@ -11,17 +11,6 @@ module MegaParser where
 
 import AST
 
-{-
-import           Data.Functor.Identity
-import           Text.Parsec                   hiding (Empty)
-import           Text.Parsec.Text              () -- instances only
-import qualified Text.Parsec.Token             as Tok
-
-import           Text.Parsec.Indentation
-import           Text.Parsec.Indentation.Char
-import qualified Text.Parsec.Indentation.Token as ITok
--}
-
 import Control.Applicative (empty)
 import Data.Functor (void)
 import Text.Megaparsec
@@ -89,16 +78,17 @@ var = Var <$> identifier
 app :: Parser Expr
 app = App <$> var <*> parens (commaSep expr)
 
-blockExpr :: Parser Expr
-blockExpr = reservedOp ":" *> expr
+blockExpr :: Pos -> Parser Expr
+blockExpr pos = reservedOp ":" *> L.indentGuard sc GT pos *> expr
  -- = reservedOp ":" *> localIndentation Gt (absoluteIndentation expr)
 
 def :: Parser Expr
 def = do
+  pos <- L.indentLevel
   reserved "def"
   name <- identifier
   args <- parens (commaSep identifier)
-  body <- blockExpr
+  body <- blockExpr pos
   return (Func name args body)
 
 expr :: Parser Expr
