@@ -5,15 +5,15 @@
 
 module Parser where
 
-import           Data.Functor                  ((<$>), (<$))
-import           Control.Applicative           (Applicative(..))
-import qualified Control.Monad                 as M
+--import           Data.Functor                  ((<$>), (<$))
+-- import           Control.Applicative           (Applicative(..))
+-- import qualified Control.Monad                 as M
 import           Data.Functor.Identity
-import           Data.Text                     (Text)
-import qualified Data.Text                     as Text
+-- import           Data.Text                     (Text)
+-- import qualified Data.Text                     as Text
 import           Text.Parsec                   hiding (Empty)
 import           Text.Parsec.Text              () -- instances only
-import qualified Text.Parsec.Expr              as Ex
+-- import qualified Text.Parsec.Expr              as Ex
 import qualified Text.Parsec.Token             as Tok
 
 import           Text.Parsec.Indentation
@@ -82,12 +82,15 @@ var = Var <$> identifier
 app :: Parser Expr
 app = App <$> var <*> parens (commaSep expr)
 
+blockExpr :: Parser Expr
+blockExpr = reservedOp ":" *> localIndentation Gt (absoluteIndentation expr)
+
 def :: Parser Expr
 def = do
   reserved "def"
   name <- identifier
   args <- parens (commaSep identifier)
-  body <- reservedOp ":" *> expr
+  body <- blockExpr
   return (Func name args body)
 
 expr :: Parser Expr
