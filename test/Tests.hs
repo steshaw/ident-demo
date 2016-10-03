@@ -74,24 +74,24 @@ origTests = testGroup "Original"
 megaGood :: Either (M.ParseError Char M.Dec) [Expr]
 megaGood = Right [Func "foo" ["x","y"] (Add (Var "x") (Var "y"))]
 
+megaBad = "blah"
+
 megaTests :: TestTree
 megaTests = testGroup "Megaparsec"
   [ testCase "test0" $
       Mega.parse test0 @?= megaGood
   , testCase "test1" $
       Mega.parse test1 @?= megaGood
-{-
   , testCase "test2" $
-      let err = case Orig.parse test2 of
+      let err = case Mega.parse test2 of
                   Right _ -> error "Right unexpected"
                   Left e  -> e
-      in head (P.errorMessages err) @?= bad
+      in show err @?= megaBad
   , testCase "test3" $
-      let err = case Orig.parse test3 of
+      let err = case Mega.parse test3 of
                   Right _ -> error "Right unexpected"
                   Left e  -> e
-      in head (P.errorMessages err) @?= bad
--}
+      in show err @?= megaBad
   , testCase "test4" $
       Mega.parse test4 @?= megaGood
   ]
