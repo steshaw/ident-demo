@@ -98,10 +98,11 @@ expr = def
    <|> int
    <|> parens expr
 
+exprs :: Parser [Expr]
+exprs = many expr <* eof
+
 indentConfig :: String -> ParserStream
-indentConfig =
-    mkIndentStream 0 infIndentation True Ge . mkCharIndentStream
+indentConfig = mkIndentStream 0 infIndentation True Ge . mkCharIndentStream
 
 parse :: String -> Either ParseError [Expr]
-parse =
-    runParser (many expr <* eof) () "[input]" . indentConfig
+parse = runParser exprs () "[input]" . indentConfig
