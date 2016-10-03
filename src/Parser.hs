@@ -5,15 +5,11 @@
 
 module Parser where
 
---import           Data.Functor                  ((<$>), (<$))
--- import           Control.Applicative           (Applicative(..))
--- import qualified Control.Monad                 as M
+import AST
+
 import           Data.Functor.Identity
--- import           Data.Text                     (Text)
--- import qualified Data.Text                     as Text
 import           Text.Parsec                   hiding (Empty)
 import           Text.Parsec.Text              () -- instances only
--- import qualified Text.Parsec.Expr              as Ex
 import qualified Text.Parsec.Token             as Tok
 
 import           Text.Parsec.Indentation
@@ -21,7 +17,7 @@ import           Text.Parsec.Indentation.Char
 import qualified Text.Parsec.Indentation.Token as ITok
 
 style :: Tok.GenLanguageDef ParserStream st Identity
-style = ITok.makeIndentLanguageDef $ Tok.LanguageDef
+style = ITok.makeIndentLanguageDef Tok.LanguageDef
     { Tok.commentStart    = ""
     , Tok.commentEnd      = ""
     , Tok.nestedComments  = True
@@ -56,19 +52,8 @@ parens = Tok.parens lexer . localIndentation Any
 commaSep :: Parser a -> Parser [a]
 commaSep = Tok.commaSep lexer
 
-type Name = String
-type Args = [Name]
-
 type ParserStream    = IndentStream (CharIndentStream String)
 type Parser          = ParsecT     ParserStream () Identity
-
-data Expr
-   = Func Name Args Expr
-   | Var  Name
-   | App  Expr [Expr]
-   | Add  Expr Expr
-   | Lit  Integer
-   deriving (Show)
 
 int :: Parser Expr
 int = Lit <$> integer
