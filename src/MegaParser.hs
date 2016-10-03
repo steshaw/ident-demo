@@ -42,15 +42,6 @@ symbol = L.symbol sc
 
 -- =================================================================
 
-{-
-style :: Tok.GenLanguageDef ParserStream st Identity
-style = ITok.makeIndentLanguageDef Tok.LanguageDef
-    , Tok.opStart         = oneOf "!#$%&*+./<=>?@\\^|-~"
-    , Tok.opLetter        = oneOf "!#$%&*+./<=>?@\\^|-~"
-    , Tok.reservedOpNames = [":"]
-    }
--}
-
 reserved :: String -> Parser ()
 reserved w =
   -- lexeme (string w *> notFollowedBy identLetter)
