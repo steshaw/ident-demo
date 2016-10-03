@@ -1,13 +1,20 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 import AST
-import Parser
+import qualified Parser as Orig
+import qualified MegaParser as Mega
 
 import Test.Tasty
 import Test.Tasty.HUnit
 
+import qualified Text.Megaparsec as M
+
 import qualified Text.Parsec as P
 import qualified Text.Parsec.Error as P
+
+
+test0 :: String
+test0 = "def foo(x,y): add x y"
 
 test1 :: String
 test1 = unlines
@@ -44,26 +51,53 @@ bad = P.Expect "identifier"
 instance Show P.Message where
   show = P.messageString
 
-unitTests :: TestTree
-unitTests = testGroup "Unit tests"
-  [ testCase "test1" $
-      parse test1 @?= good
+origTests :: TestTree
+origTests = testGroup "Original"
+  [ testCase "test0" $
+      Orig.parse test0 @?= good
+  , testCase "test1" $
+      Orig.parse test1 @?= good
   , testCase "test2" $
-      let err = case parse test2 of
+      let err = case Orig.parse test2 of
                   Right _ -> error "Right unexpected"
                   Left e  -> e
       in head (P.errorMessages err) @?= bad
   , testCase "test3" $
-      let err = case parse test3 of
+      let err = case Orig.parse test3 of
                   Right _ -> error "Right unexpected"
                   Left e  -> e
       in head (P.errorMessages err) @?= bad
   , testCase "test4" $
-      parse test4 @?= good
+      Orig.parse test4 @?= good
+  ]
+
+megaGood :: Either (M.ParseError Char M.Dec) [Expr]
+megaGood = Right [Func "foo" ["x","y"] (Add (Var "x") (Var "y"))]
+
+megaTests :: TestTree
+megaTests = testGroup "Megaparsec"
+  [ testCase "test0" $
+      Mega.parse test0 @?= megaGood
+{-
+  , testCase "test1" $
+      Orig.parse test1 @?= good
+  , testCase "test2" $
+      let err = case Orig.parse test2 of
+                  Right _ -> error "Right unexpected"
+                  Left e  -> e
+      in head (P.errorMessages err) @?= bad
+  , testCase "test3" $
+      let err = case Orig.parse test3 of
+                  Right _ -> error "Right unexpected"
+                  Left e  -> e
+      in head (P.errorMessages err) @?= bad
+  , testCase "test4" $
+      Orig.parse test4 @?= good
+-}
   ]
 
 tests :: TestTree
-tests = unitTests
+tests = testGroup "Unit tests" [origTests, megaTests]
 
 main :: IO ()
 main = defaultMain tests
