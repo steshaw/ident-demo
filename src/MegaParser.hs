@@ -22,6 +22,7 @@ import           Text.Parsec.Indentation.Char
 import qualified Text.Parsec.Indentation.Token as ITok
 -}
 
+import Control.Applicative (empty)
 import Data.Functor (void)
 import Text.Megaparsec
 import Text.Megaparsec.String
@@ -31,7 +32,7 @@ sc :: Parser () -- `sc` stands for "space consumer"
 sc = L.space (void spaceChar) lineComment blockComment
   where
     lineComment = L.skipLineComment "#"
-    blockComment = L.skipBlockComment "/*" "*/" -- pure () -- No block comments in Pythonese.
+    blockComment = empty
 
 lexeme :: Parser a -> Parser a
 lexeme = L.lexeme sc
