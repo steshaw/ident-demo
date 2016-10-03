@@ -1,0 +1,8 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+extra-deps:
+- indentation-0.3.1
+- indentation-trifecta-0.0.1
+resolver: lts-7.2

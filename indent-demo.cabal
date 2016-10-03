@@ -1,0 +1,44 @@
+name:                indent-demo
+version:             0.1.0.0
+synopsis:            Demo of indentation/layout/offside-rule parsing.
+description:         Please see README.md
+homepage:            https://github.com/steshaw/indent-demo#readme
+license:             BSD2
+license-file:        LICENSE
+author:              Steven Shaw
+maintainer:          steven@steshaw.org
+copyright:           (c) 2016, Steven Shaw
+category:            Parsing
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Parser
+  build-depends:       base >= 4.7 && < 5
+                     , indentation
+                     , parsec
+                     , text
+  default-language:    Haskell2010
+
+executable indent-demo
+  hs-source-dirs:      main
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , indent-demo
+  default-language:    Haskell2010
+
+test-suite indent-demo-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , indent-demo
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/steshaw/indent-demo
