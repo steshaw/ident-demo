@@ -34,7 +34,7 @@ executable indent-demo
 test-suite indent-demo-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
-  main-is:             Spec.hs
+  main-is:             Tests.hs
   build-depends:       base
                      , indent-demo
                      , parsec

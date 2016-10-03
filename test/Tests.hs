@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 import AST
 import Parser
 
@@ -42,24 +44,26 @@ bad = P.Expect "identifier"
 instance Show P.Message where
   show = P.messageString
 
+unitTests :: TestTree
 unitTests = testGroup "Unit tests"
   [ testCase "test1" $
       parse test1 @?= good
   , testCase "test2" $
       let err = case parse test2 of
-                  Right a -> error "Right unexpected"
-                  Left err -> err
+                  Right _ -> error "Right unexpected"
+                  Left e  -> e
       in head (P.errorMessages err) @?= bad
   , testCase "test3" $
       let err = case parse test3 of
-                  Right a -> error "Right unexpected"
-                  Left err -> err
+                  Right _ -> error "Right unexpected"
+                  Left e  -> e
       in head (P.errorMessages err) @?= bad
   , testCase "test4" $
       parse test4 @?= good
   ]
 
+tests :: TestTree
 tests = unitTests
 
 main :: IO ()
-main = defaultMain unitTests
+main = defaultMain tests
